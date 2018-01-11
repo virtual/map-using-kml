@@ -1,0 +1,82 @@
+<style>
+    /* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+
+    #map {
+        height: 90%;
+        min-height: 480px;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #map {
+        float: left;
+        height: 100%;
+        width: 79%;
+      }
+      #content-window {
+        float: left;
+        font-family: 'Roboto','sans-serif';
+        height: 100%;
+        line-height: 30px;
+        padding-left: 10px;
+        width: 19%;
+      }
+</style>
+
+
+<div id="map"></div>
+<div id="content-window"></div>
+<!-- Replace the value of the key parameter with your own API key. -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBs1A9jliZ9_8RviSP3IrhAx6YFT5nu6cE&callback=initMap">
+</script>
+
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 11,
+            center: { lat: 41.876, lng: -87.624 }
+        });
+
+        var manicon = 'https://maps.google.com/mapfiles/kml/shapes/library_maps.png'
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var icons = {
+            parking: {
+                icon: iconBase + 'parking_lot_maps.png'
+            },
+            library: {
+                icon: iconBase + 'library_maps.png'
+            },
+            info: {
+                icon: iconBase + 'info-i_maps.png'
+            }
+        };
+
+        var kmlLayer = new google.maps.KmlLayer({
+            //url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',
+            url: 'https://optechusasite.s3.amazonaws.com/pages/dealers/map.kml',
+            //icon: icons['parking'].icon,
+            icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10
+          },
+            //suppressInfoWindows: true,
+            map: map
+        });
+        kmlLayer.addListener('click', function(kmlEvent) {
+          var text = kmlEvent.featureData.description;
+          showInContentWindow(text);
+        });
+
+        function showInContentWindow(text) {
+          var sidediv = document.getElementById('content-window');
+          sidediv.innerHTML = text;
+        }
+    }
+</script>
